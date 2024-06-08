@@ -4,29 +4,35 @@ import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Filler,
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
-const data = {
-  labels: ['Joy', 'Sadness', 'Anger', 'Fear', 'Surprise', 'Disgust'],
-  datasets: [
-    {
-      label: 'Emotions',
-      data: [65, 59, 90, 81, 56, 55],
-      backgroundColor: 'rgba(34, 202, 236, 0.2)',
-      borderColor: 'rgba(34, 202, 236, 1)',
-      borderWidth: 1,
-    },
-  ],
-};
-
 const options = {
   scales: {
-    r: { beginAtZero: true },
+    r: {
+      beginAtZero: true,
+    },
   },
 };
 
-const SpiderGraph: React.FC = () => {
+interface SpiderGraphProps {
+  data: number[];
+}
+
+const SpiderGraph: React.FC<SpiderGraphProps> = ({ data }) => {
+  const chartData = {
+    labels: ['Joy', 'Sadness', 'Anger', 'Fear', 'Surprise', 'Disgust'],
+    datasets: [
+      {
+        label: 'Emotions',
+        data: data,
+        backgroundColor: 'rgba(34, 202, 236, 0.2)',
+        borderColor: 'rgba(34, 202, 236, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+
   return (
     <div className="w-full max-w-lg mx-auto">
-      <Radar data={data} options={options} />
+      <Radar data={chartData} options={options} />
     </div>
   );
 };

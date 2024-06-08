@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 
-const JournalEntryForm: React.FC = () => {
+interface JournalEntryFormProps {
+  onSubmit: (entry: string) => void;
+}
+
+const JournalEntryForm: React.FC<JournalEntryFormProps> = ({ onSubmit }) => {
   const [journalEntry, setJournalEntry] = useState('');
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -9,7 +13,7 @@ const JournalEntryForm: React.FC = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    console.log(journalEntry);
+    onSubmit(journalEntry);
   };
 
   return (
