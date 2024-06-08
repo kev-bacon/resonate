@@ -13,6 +13,7 @@ const JournalEntryForm: React.FC<JournalEntryFormProps> = ({ onSubmit }) => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    console.log('Form submitted with entry:', journalEntry);  // Log the journal entry
     onSubmit(journalEntry);
   };
 

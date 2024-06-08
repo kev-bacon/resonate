@@ -17,8 +17,9 @@ interface SpiderGraphProps {
 }
 
 const SpiderGraph: React.FC<SpiderGraphProps> = ({ data }) => {
+  console.log('SpiderGraph data:', data);  // Log the data received by the component
   const chartData = {
-    labels: ['Joy', 'Sadness', 'Anger', 'Fear', 'Surprise', 'Disgust'],
+    labels: ['Joy', 'Sadness', 'Anger', 'Fear', 'Surprise', 'Disgust', 'Neutral'],
     datasets: [
       {
         label: 'Emotions',
