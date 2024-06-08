@@ -16,8 +16,8 @@ const HomePage: React.FC = () => {
             className="self-stretch aspect-[2.7] w-[234px]"
           />
           <div className="shrink-0 self-stretch my-auto w-0.5 h-10 bg-gray-200 rounded-sm" />
-           <Link to="/" className="self-stretch my-auto">Home</Link>
-          <div className="self-stretch my-auto">Chat</div>
+				  <Link to="/" className="self-stretch my-auto">Home</Link>
+				  <Link to="/chat" className="self-stretch my-auto">Chat</Link>
           <Link to="/upload" className="self-stretch my-auto">Upload</Link>
           <Link to="/discover" className="self-stretch my-auto">Discover</Link>
         </div>
