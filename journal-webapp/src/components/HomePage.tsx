@@ -16,10 +16,10 @@ const HomePage: React.FC = () => {
             className="self-stretch aspect-[2.7] w-[234px]"
           />
           <div className="shrink-0 self-stretch my-auto w-0.5 h-10 bg-gray-200 rounded-sm" />
-          <div className="self-stretch my-auto">Home</div>
+           <Link to="/" className="self-stretch my-auto">Home</Link>
           <div className="self-stretch my-auto">Chat</div>
-          <div className="self-stretch my-auto">Upload</div>
-          <div className="self-stretch my-auto">Discover</div>
+          <Link to="/upload" className="self-stretch my-auto">Upload</Link>
+          <Link to="/discover" className="self-stretch my-auto">Discover</Link>
         </div>
         <div className="mt-5 w-full bg-gray-200 min-h-[1px] max-md:max-w-full" />
       </div>
