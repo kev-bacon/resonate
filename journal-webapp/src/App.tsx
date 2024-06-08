@@ -5,16 +5,26 @@ import SpiderGraph from './components/SpiderGraph';
 import axios from 'axios';
 
 const App: React.FC = () => {
-  const [emotionsData, setEmotionsData] = useState([0, 0, 0, 0, 0, 0]);
+  const [emotionsData, setEmotionsData] = useState([0, 0, 0, 0, 0, 0, 0]);
 
   const analyzeJournalEntry = async (entry: string) => {
+    console.log('analyzeJournalEntry called with entry:', entry);  // Log the function call
     try {
       const response = await axios.post('http://localhost:8000/analyze', { entry });
-      const { data } = response; // TO DO: Retrieve info from backend in JSON format
-      setEmotionsData(data.emotions);
+      console.log('API response:', response.data);  // Log the API response
+      const emotions = response.data.Emotions;
+
+      setEmotionsData([
+        emotions.joy,
+        emotions.sadness,
+        emotions.anger,
+        emotions.fear,
+        emotions.surprise,
+        emotions.disgust,
+        emotions.neutral,
+      ]);
     } catch (error) {
-      console.error('Error analyzing journal entry:', error);
-      // Handle error appropriately
+      console.error('Error fetching analysis data:', error);
     }
   };
 
