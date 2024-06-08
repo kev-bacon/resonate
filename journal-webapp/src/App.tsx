@@ -1,12 +1,14 @@
 import React from 'react';
+import './App.css';
+import JournalEntryForm from './components/JournalEntryForm';
+import SpiderGraph from './components/SpiderGraph';
 
 const App: React.FC = () => {
   return (
-    <div className="text-center">
-      <header className="bg-blue-500 min-h-screen flex flex-col items-center justify-center text-white">
-        <h1 className="text-6xl font-bold">Welcome to Journal Webapp</h1>
-        <p className="mt-4">Start adding your journal entries!</p>
-      </header>
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center space-y-8">
+      <h1 className="text-4xl font-bold">Journal Analysis</h1>
+      <JournalEntryForm />
+      <SpiderGraph />
     </div>
   );
 };
