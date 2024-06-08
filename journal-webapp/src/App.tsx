@@ -1,14 +1,14 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import HomePage from './components/HomePage';
-import Upload from './components/Upload';
+import axios from 'axios';
+import React, { useState } from 'react';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import Chat from './components/Chat';
 import Discover from './components/Discover';
 import Entry from './components/Entry';
-import Chat from './components/Chat';
+import HomePage from './components/HomePage';
+import Upload from './components/Upload';
 
 const App: React.FC = () => {
-<<<<<<< HEAD
-=======
+
   const [emotionsData, setEmotionsData] = useState([0, 0, 0, 0, 0, 0, 0]);
 
   const analyzeJournalEntry = async (entry: string) => {
@@ -32,7 +32,7 @@ const App: React.FC = () => {
     }
   };
 
->>>>>>> main
+
   return (
     <Router>
       <Routes>
