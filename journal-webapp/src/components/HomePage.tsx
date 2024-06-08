@@ -37,11 +37,7 @@ const HomePage: React.FC = () => {
               </div>
             </div>
             <div className="flex flex-col ml-5 w-6/12 max-md:ml-0 max-md:w-full">
-              <img
-                loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/c245f13b53e948a08c4a4edc879898d65caa6a7916fdc9486ffe544bfd1f3b93?apiKey=285d23d46715474fb293f76359ad36c5&"
-                className="grow w-full aspect-[1.01] max-md:mt-10 max-md:max-w-full"
-              />
+               <SpiderGraph data={mockData} />
             </div>
           </div>
         </div>
@@ -118,9 +114,6 @@ const HomePage: React.FC = () => {
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/cf1edcbdeac70f47457a933a9268ead76759534cac2f2308fd3c1d8174c18ff5?apiKey=285d23d46715474fb293f76359ad36c5&"
           className="mt-10 w-20 aspect-[10]"
         />
-      </div>
-      <div className="flex flex-col items-center mt-16">
-        <SpiderGraph data={mockData} />
       </div>
     </div>
   );
