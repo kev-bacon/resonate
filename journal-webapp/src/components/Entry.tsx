@@ -1,14 +1,13 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import SpiderGraph from './SpiderGraph';
-import { Link } from 'react-router-dom';
 
 const Entry: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [emotionsData, setEmotionsData] = useState<number[]>([0, 0, 0, 0, 0, 0]);
+  const [emotionsData, setEmotionsData] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
 
-  // Mock data for the example, replace with real data fetching
+  // Replace the mock data fetching with real data fetching
   const entry = {
     id,
     title: 'AI Generated Title',
@@ -18,22 +17,16 @@ const Entry: React.FC = () => {
       Today has been a day of introspection and quiet reflection. I started
       my morning with a brisk walk in the nearby park. The air was crisp,
       and the sky was painted with hues of pink and orange as the sun began
-      to rise. There’s something incredibly grounding about being in nature,
-      and it provided me with the perfect backdrop to collect my thoughts.
-      As I walked, I couldn’t help but think about the past few months. Life
-      has been a whirlwind of activities, projects, and personal growth.
-      There have been moments of sheer joy and, inevitably, moments of
-      stress and frustration. But, reflecting on it now, I realize how much
-      I’ve learned and grown during this period.
+      to rise. 
     `,
   };
 
   useEffect(() => {
     const fetchAnalysis = async () => {
       try {
-        const response = await axios.post('http://localhost:8000/analyze', { entry: entry.content });
+        const response = await axios.post('http://localhost:5001/analyze', { text: entry.content });
         const data = response.data;
-        setEmotionsData(data.emotions);
+        setEmotionsData(data.data);
       } catch (error) {
         console.error('Error analyzing journal entry:', error);
       }
@@ -52,7 +45,7 @@ const Entry: React.FC = () => {
             className="self-stretch aspect-[2.7] w-[234px]"
           />
           <div className="shrink-0 self-stretch my-auto w-0.5 h-10 bg-gray-200 rounded-sm" />
-       <Link to="/" className="self-stretch my-auto">Home</Link>
+          <Link to="/" className="self-stretch my-auto">Home</Link>
           <div className="self-stretch my-auto">Chat</div>
           <Link to="/upload" className="self-stretch my-auto">Upload</Link>
           <Link to="/discover" className="self-stretch my-auto">Discover</Link>
