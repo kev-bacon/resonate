@@ -13,36 +13,44 @@ const Upload: React.FC = () => {
   const [emotionsData, setEmotionsData] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
   const [entryTitle, setEntryTitle] = useState<string>('');
   const [entryTags, setEntryTags] = useState<string[]>([]);
+  const [entryContent, setEntryContent] = useState<string>('');
 
   const analyzeJournalEntry = async (entry: string) => {
     console.log('Form submitted with entry:', entry);
+    setEntryContent(entry);
     try {
       const response = await axios.post('http://localhost:5001/api/analyze', { text: entry });
       const data = response.data;
       setEmotionsData(data.data);
       setEntryTitle(data.title);
       setEntryTags(data.tags);
-      
-      // Upload the entry to Supabase
+    } catch (error) {
+      console.error('Error analyzing journal entry:', error);
+    }
+  };
+
+  const uploadToSupabase = async () => {
+    try {
       const { error } = await supabase
         .from('journal_entries')
         .insert([
           {
             date_time: new Date().toISOString(),
-            title: data.title,
-            content: entry,
-            emotions: data.data,
-            tags: data.tags,
+            title: entryTitle,
+            content: entryContent,
+            emotions: emotionsData,
+            tags: entryTags,
           },
         ]);
-      
+
       if (error) {
         console.error('Error uploading to Supabase:', error);
       } else {
         console.log('Entry successfully uploaded to Supabase');
+        window.location.reload();
       }
     } catch (error) {
-      console.error('Error analyzing journal entry:', error);
+      console.error('Error during Supabase upload:', error);
     }
   };
 
@@ -72,6 +80,7 @@ const Upload: React.FC = () => {
         {entryTitle && <h2 className="text-2xl mt-4">{entryTitle}</h2>}
         {entryTags.length > 0 && <div className="flex gap-2 mt-2">{entryTags.map((tag, index) => <span key={index} className="bg-gray-200 rounded-full px-3 py-1">{tag}</span>)}</div>}
         <SpiderGraph data={emotionsData} />
+        <button onClick={uploadToSupabase} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">Upload Entry</button>
       </div>
     </div>
   );
