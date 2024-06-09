@@ -40,7 +40,9 @@ app.post('/analyze', async (req, res) => {
       
       Then create a short title for the entry, between 3 and 7 words. Make it fun and creative and reflective.
       
-      Generate three key tags for the entry, separated by commas. These tags should be relevant to the content of the entry.`
+      Generate three key tags for the entry, separated by commas. These tags should be relevant to the content of the entry.
+	  
+	  Give me everything in just plain text. No symbols or quotes`
     }
   ];
 
