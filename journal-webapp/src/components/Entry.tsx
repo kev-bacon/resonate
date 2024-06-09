@@ -1,39 +1,35 @@
+// src/components/Entry.tsx
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { Entry as EntryType } from '../types';
 import SpiderGraph from './SpiderGraph';
 
 const Entry: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const [entry, setEntry] = useState<EntryType | null>(null);
   const [emotionsData, setEmotionsData] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
 
-  // Replace the mock data fetching with real data fetching
-  const entry = {
-    id,
-    title: 'AI Generated Title',
-    date: 'June 7, 2024',
-    tags: ['Happy', 'travel'],
-    content: `
-      Today has been a day of introspection and quiet reflection. I started
-      my morning with a brisk walk in the nearby park. The air was crisp,
-      and the sky was painted with hues of pink and orange as the sun began
-      to rise. 
-    `,
-  };
-
   useEffect(() => {
-    const fetchAnalysis = async () => {
+    const fetchEntry = async () => {
       try {
-        const response = await axios.post('http://localhost:5001/api/analyze', { text: entry.content });
-        const data = response.data;
-        setEmotionsData(data.data);
+        const response = await axios.get(`http://localhost:5001/api/entry/${id}`);
+        setEntry(response.data);
+
+        const analysisResponse = await axios.post('http://localhost:5001/api/analyze', { text: response.data.content });
+        const analysisData = analysisResponse.data;
+        setEmotionsData(analysisData.data);
       } catch (error) {
-        console.error('Error analyzing journal entry:', error);
+        console.error('Error fetching journal entry or analyzing it:', error);
       }
     };
 
-    fetchAnalysis();
-  }, [entry.content]);
+    fetchEntry();
+  }, [id]);
+
+  if (!entry) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="flex flex-col items-center pb-20 bg-white">
@@ -43,6 +39,7 @@ const Entry: React.FC = () => {
             loading="lazy"
             srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&"
             className="self-stretch aspect-[2.7] w-[234px]"
+            alt="Logo"
           />
           <div className="shrink-0 self-stretch my-auto w-0.5 h-10 bg-gray-200 rounded-sm" />
           <Link to="/" className="self-stretch my-auto">Home</Link>
@@ -60,7 +57,7 @@ const Entry: React.FC = () => {
           <div className="text-xs font-medium leading-5 text-right text-black uppercase tracking-[2px]">
             Tags: {entry.tags.join(', ')}
           </div>
-          <div className="text-base leading-6 text-slate-400">{entry.date}</div>
+          <div className="text-base leading-6 text-slate-400">{new Date(entry.date_time).toLocaleDateString()}</div>
         </div>
         <div className="mt-12 text-base leading-6 text-neutral-700 max-md:mt-10 max-md:mr-0.5 max-md:max-w-full">
           {entry.content}

@@ -2,5 +2,8 @@
 export interface Entry {
   id: number;
   content: string;
-  date_time: string;
+	date_time: string;
+	emotions: JSON;
+	title: string;
+	tags: string[];
 }
