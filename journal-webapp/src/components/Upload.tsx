@@ -1,11 +1,18 @@
+import { createClient } from '@supabase/supabase-js';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import JournalEntryForm from './JournalEntryForm';
 import SpiderGraph from './SpiderGraph';
 
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
+const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
+const supabase = createClient(supabaseUrl ?? '', supabaseKey ?? '');
+
 const Upload: React.FC = () => {
   const [emotionsData, setEmotionsData] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
+  const [entryTitle, setEntryTitle] = useState<string>('');
+  const [entryTags, setEntryTags] = useState<string[]>([]);
 
   const analyzeJournalEntry = async (entry: string) => {
     console.log('Form submitted with entry:', entry);
@@ -13,6 +20,27 @@ const Upload: React.FC = () => {
       const response = await axios.post('http://localhost:5001/analyze', { text: entry });
       const data = response.data;
       setEmotionsData(data.data);
+      setEntryTitle(data.title);
+      setEntryTags(data.tags);
+      
+      // Upload the entry to Supabase
+      const { error } = await supabase
+        .from('journal_entries')
+        .insert([
+          {
+            date_time: new Date().toISOString(),
+            title: data.title,
+            content: entry,
+            emotions: data.data,
+            tags: data.tags,
+          },
+        ]);
+      
+      if (error) {
+        console.error('Error uploading to Supabase:', error);
+      } else {
+        console.log('Entry successfully uploaded to Supabase');
+      }
     } catch (error) {
       console.error('Error analyzing journal entry:', error);
     }
@@ -41,6 +69,8 @@ const Upload: React.FC = () => {
       <div className="flex flex-col px-14 pt-16 pb-6 mt-16 w-full rounded-3xl border-0 border-black border-solid shadow-sm bg-neutral-50 max-w-[1132px] max-md:px-5 max-md:mt-10 max-md:max-w-full">
         <h1 className="text-4xl font-bold mb-4">Journal Analysis</h1>
         <JournalEntryForm onSubmit={analyzeJournalEntry} />
+        {entryTitle && <h2 className="text-2xl mt-4">{entryTitle}</h2>}
+        {entryTags.length > 0 && <div className="flex gap-2 mt-2">{entryTags.map((tag, index) => <span key={index} className="bg-gray-200 rounded-full px-3 py-1">{tag}</span>)}</div>}
         <SpiderGraph data={emotionsData} />
       </div>
     </div>
