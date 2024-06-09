@@ -65,7 +65,7 @@ const HomePage: React.FC = () => {
           <div className="flex gap-5 max-md:flex-col max-md:gap-0">
             <div className="flex flex-col w-6/12 max-md:ml-0 max-md:w-full">
               <div className="flex flex-col self-stretch my-auto font-bold max-md:mt-10 max-md:max-w-full">
-                <div className="text-8xl tracking-tighter text-neutral-900 max-md:max-w-full max-md:text-4xl max-md:leading-10">
+                <div className="text-7xl tracking-tighter text-neutral-800 max-md:max-w-full max-md:text-4xl max-md:leading-10">
                   {quote}
                 </div>
                 <Link to="/upload" className="justify-center self-start px-6 py-4 mt-6 text-xl leading-4 text-center text-gray-50 bg-neutral-900 rounded-[90px] max-md:px-5">
