@@ -33,11 +33,8 @@ const handleSubmit = async (e: React.FormEvent) => {
   }
 };
 
-
-
   return (
     <div className="flex flex-col pb-20 bg-white">
-      {/* Include the Dashboard component here */}
       <Dashboard />
       <div className="flex flex-col mt-32 w-full max-w-[796px] mx-auto max-md:mt-10">
         {messages.map((message, index) => (
