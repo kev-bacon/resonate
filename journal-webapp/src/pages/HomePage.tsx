@@ -1,14 +1,15 @@
+// src/pages/HomePage.tsx
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Carousel } from 'react-responsive-carousel';
-import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Link } from 'react-router-dom';
+import RecentEntriesCarousel from '../components/RecentEntriesCarousel';
 import SpiderGraph from '../components/SpiderGraph';
-
+import { Entry } from '../types';
 
 const HomePage: React.FC = () => {
   const [quote, setQuote] = useState('');
   const [emotionsData, setEmotionsData] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
+  const [entries, setEntries] = useState<Entry[]>([]);
 
   useEffect(() => {
     const fetchQuote = async () => {
@@ -25,7 +26,18 @@ const HomePage: React.FC = () => {
       }
     };
 
+    const fetchEntries = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/api/entries');
+        const data = response.data;
+        setEntries(data);
+      } catch (error) {
+        console.error('Error fetching entries:', error);
+      }
+    };
+
     fetchQuote();
+    fetchEntries();
   }, []);
 
   return (
@@ -37,6 +49,7 @@ const HomePage: React.FC = () => {
               loading="lazy"
               srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&"
               className="self-stretch aspect-[2.7] w-[234px]"
+              alt="Logo"
             />
           </Link>
           <div className="shrink-0 self-stretch my-auto w-0.5 h-10 bg-gray-200 rounded-sm" />
@@ -70,25 +83,7 @@ const HomePage: React.FC = () => {
         <div className="text-3xl font-bold tracking-tight text-center text-black">
           Last few days in review
         </div>
-        {/* Replace the static entries with dynamic content from the database */}
-        <div className="flex gap-5 justify-between items-center self-stretch mt-24 w-full max-md:flex-wrap max-md:mt-10 max-md:max-w-full">
-          {/* Implement a carousel to display recent journal entries */}
-          {/* Example: */}
-          <Carousel>
-            {entries.map((entry) => (
-              <div key={entry.id} className="flex flex-col grow justify-center rounded-3xl max-md:mt-8">
-                <div className="flex flex-col px-6 py-11 bg-gray-100 max-md:px-5">
-                  <div className="text-xl leading-8 text-slate-600">
-                    {entry.content}
-                  </div>
-                  <div className="self-center mt-20 text-base leading-5 text-center text-neutral-600 max-md:mt-10">
-                    {new Date(entry.date_time).toLocaleDateString()}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </Carousel>
-        </div>
+        <RecentEntriesCarousel entries={entries} />
         <img
           loading="lazy"
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/cf1edcbdeac70f47457a933a9268ead76759534cac2f2308fd3c1d8174c18ff5?apiKey=285d23d46715474fb293f76359ad36c5&"

@@ -27,7 +27,7 @@ router.get('/generate-quote', async (req, res) => {
 
     const systemPrompt = {
       role: "system",
-      content: "You are a motivational quote generator. Provide a motivational, fun, or funny quote based on the following text:"
+      content: "You are costar, but powered by journal entries. Provide a motivational, fun, or funny one sentence (20 characters max, don't put quotes around it) quote based on the following text:"
     };
 
     const messages = [
