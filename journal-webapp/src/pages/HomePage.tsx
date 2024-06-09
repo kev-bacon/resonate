@@ -24,7 +24,7 @@ const HomePage: React.FC = () => {
         const fetchedQuote = cleanQuote(quoteResponse.data.quote);
         const analysisResponse = await axios.post('http://localhost:5001/api/analyze', { text: fetchedQuote });
         const fetchedEmotionsData = analysisResponse.data.data;
-        
+
         setQuote(fetchedQuote);
         setEmotionsData(fetchedEmotionsData);
       } catch (error) {
@@ -73,11 +73,6 @@ const HomePage: React.FC = () => {
         <div className="w-full px-4 max-md:px-2">
           <RecentEntriesCarousel entries={entries} />
         </div>
-        <img
-          loading="lazy"
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/cf1edcbdeac70f47457a933a9268ead76759534cac2f2308fd3c1d8174c18ff5?apiKey=285d23d46715474fb293f76359ad36c5&"
-          className="mt-10 w-20 aspect-[10]"
-        />
       </div>
     </div>
   );
