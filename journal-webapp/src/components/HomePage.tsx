@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import SpiderGraph from './SpiderGraph';
 import motivations from '../motivations.json'; // Adjust the path as necessary
+import SpiderGraph from './SpiderGraph';
 
 const HomePage: React.FC = () => {
   const [quote, setQuote] = useState('');
