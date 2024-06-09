@@ -7,7 +7,7 @@ import SpiderGraph from '../components/SpiderGraph';
 import { Entry } from '../types';
 
 const HomePage: React.FC = () => {
-  const [quote, setQuote] = useState('');
+  const [quote, setQuote] = useState<string>('');
   const [emotionsData, setEmotionsData] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
   const [entries, setEntries] = useState<Entry[]>([]);
 
@@ -41,7 +41,8 @@ const HomePage: React.FC = () => {
       }
     };
 
-    Promise.all([fetchQuoteAndAnalyze(), fetchEntries()]);
+    fetchQuoteAndAnalyze();
+    fetchEntries();
   }, []);
 
   return (

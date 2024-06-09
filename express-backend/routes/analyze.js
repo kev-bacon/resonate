@@ -45,13 +45,13 @@ router.post('/analyze', async (req, res) => {
 
     const extractDetails = (text) => {
       const scores = {
-        'Joy': 0,
+        'Joy': 0.1,
         'Sadness': 0,
         'Anger': 0,
         'Fear': 0,
-        'Surprise': 0,
+        'Surprise': 0.2,
         'Disgust': 0,
-        'Neutral': 0
+        'Neutral': 0.2
       };
       const details = {
         title: "",
