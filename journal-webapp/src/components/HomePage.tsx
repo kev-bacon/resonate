@@ -1,19 +1,30 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import motivations from '../motivations.json'; // Adjust the path as necessary
+import motivations from '../motivations.json';
 import SpiderGraph from './SpiderGraph';
 
 const HomePage: React.FC = () => {
-  const [quote, setQuote] = useState('');
+   const [quote, setQuote] = useState('');
+  const [emotionsData, setEmotionsData] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
 
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * motivations.length);
-    const quote = motivations[randomIndex];
-    setQuote(quote);
-  }, []);
+    const selectedQuote = motivations[randomIndex];
+    setQuote(selectedQuote);
 
-  // Mock data for the spider graph
-  const mockData = [4, 2, 5, 3, 1, 4];
+    const fetchAnalysis = async () => {
+      try {
+        const response = await axios.post('http://localhost:5001/analyze', { text: selectedQuote });
+        const data = response.data;
+        setEmotionsData(data.data);
+      } catch (error) {
+        console.error('Error analyzing quote:', error);
+      }
+    };
+
+    fetchAnalysis();
+  }, []);
 
   return (
     <div className="flex flex-col pb-14 bg-white">
@@ -48,7 +59,7 @@ const HomePage: React.FC = () => {
               </div>
             </div>
             <div className="flex flex-col ml-5 w-6/12 max-md:ml-0 max-md:w-full">
-              <SpiderGraph data={mockData} />
+              <SpiderGraph data={emotionsData} />
             </div>
           </div>
         </div>

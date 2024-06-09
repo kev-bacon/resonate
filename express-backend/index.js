@@ -36,7 +36,7 @@ app.post('/analyze', async (req, res) => {
     systemPrompt,
     {
       role: "user",
-      content: `Perform sentiment analysis and provide scores for Joy, Sadness, Anger, Fear, Surprise, Disgust, and Neutral for the following text: ${text}`
+      content: `Perform sentiment analysis and provide scores between 0.1 and 1.0 for Joy, Sadness, Anger, Fear, Surprise, Disgust, and Neutral for the following text: ${text}`
     }
   ];
 
