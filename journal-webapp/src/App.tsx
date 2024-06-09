@@ -1,11 +1,11 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import Chat from './components/Chat';
-import Discover from './components/Discover';
+import Chat from './pages/Chat';
+import Discover from './pages/Discover';
 import Entry from './components/Entry';
-import HomePage from './components/HomePage';
-import Upload from './components/Upload';
+import HomePage from './pages/HomePage';
+import Upload from './pages/Upload';
 
 const App: React.FC = () => {
 

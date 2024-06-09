@@ -1,29 +1,31 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { Carousel } from 'react-responsive-carousel';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Link } from 'react-router-dom';
-import motivations from '../motivations.json';
-import SpiderGraph from './SpiderGraph';
+import SpiderGraph from '../components/SpiderGraph';
+
 
 const HomePage: React.FC = () => {
-   const [quote, setQuote] = useState('');
+  const [quote, setQuote] = useState('');
   const [emotionsData, setEmotionsData] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
 
   useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * motivations.length);
-    const selectedQuote = motivations[randomIndex];
-    setQuote(selectedQuote);
-
-    const fetchAnalysis = async () => {
+    const fetchQuote = async () => {
       try {
-        const response = await axios.post('http://localhost:5001/api/analyze', { text: selectedQuote });
+        const response = await axios.get('http://localhost:5001/api/generate-quote');
         const data = response.data;
-        setEmotionsData(data.data);
+        setQuote(data.quote);
+
+        const analysisResponse = await axios.post('http://localhost:5001/api/analyze', { text: data.quote });
+        const analysisData = analysisResponse.data;
+        setEmotionsData(analysisData.data);
       } catch (error) {
-        console.error('Error analyzing quote:', error);
+        console.error('Error fetching quote or analyzing it:', error);
       }
     };
 
-    fetchAnalysis();
+    fetchQuote();
   }, []);
 
   return (
@@ -68,68 +70,24 @@ const HomePage: React.FC = () => {
         <div className="text-3xl font-bold tracking-tight text-center text-black">
           Last few days in review
         </div>
+        {/* Replace the static entries with dynamic content from the database */}
         <div className="flex gap-5 justify-between items-center self-stretch mt-24 w-full max-md:flex-wrap max-md:mt-10 max-md:max-w-full">
-          <img
-            loading="lazy"
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/d779d83e4dd2f7d5495e5f1bb21deb8f9b8bcc81a4b674e30d801e6a79ec33dc?apiKey=285d23d46715474fb293f76359ad36c5&"
-            className="shrink-0 self-stretch my-auto w-6 aspect-square"
-          />
-          <div className="self-stretch max-md:max-w-full">
-            <div className="flex gap-5 max-md:flex-col max-md:gap-0">
-              <div className="flex flex-col w-[33%] max-md:ml-0 max-md:w-full">
-                <div className="flex flex-col grow justify-center rounded-3xl max-md:mt-8">
-                  <div className="flex flex-col px-6 py-11 bg-gray-50 max-md:px-5">
-                    <div className="text-xl leading-8 text-slate-600">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Aliquam scelerisque posuere vivamus egestas porttitor.
-                      Hendrerit vitae at nulla varius proin ipsum. Purus augue
-                      in morbi.
-                    </div>
-                    <div className="self-center mt-20 text-base leading-5 text-center text-neutral-600 max-md:mt-10">
-                      June 7, 2024
-                    </div>
+          {/* Implement a carousel to display recent journal entries */}
+          {/* Example: */}
+          <Carousel>
+            {entries.map((entry) => (
+              <div key={entry.id} className="flex flex-col grow justify-center rounded-3xl max-md:mt-8">
+                <div className="flex flex-col px-6 py-11 bg-gray-100 max-md:px-5">
+                  <div className="text-xl leading-8 text-slate-600">
+                    {entry.content}
+                  </div>
+                  <div className="self-center mt-20 text-base leading-5 text-center text-neutral-600 max-md:mt-10">
+                    {new Date(entry.date_time).toLocaleDateString()}
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col ml-5 w-[33%] max-md:ml-0 max-md:w-full">
-                <div className="flex flex-col grow justify-center rounded-3xl max-md:mt-8">
-                  <div className="flex flex-col px-6 py-11 bg-gray-100 max-md:px-5">
-                    <div className="text-xl leading-8 text-slate-600">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Aliquam scelerisque posuere vivamus egestas porttitor.
-                      Hendrerit vitae at nulla varius proin ipsum. Purus augue
-                      in morbi.
-                    </div>
-                    <div className="self-center mt-20 text-base leading-5 text-center text-neutral-600 max-md:mt-10">
-                      June 7, 2024
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col ml-5 w-[33%] max-md:ml-0 max-md:w-full">
-                <div className="flex flex-col grow justify-center rounded-3xl max-md:mt-8">
-                  <div className="flex flex-col px-6 py-11 bg-gray-100 max-md:px-5">
-                    <div className="text-xl leading-8 text-slate-600">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Aliquam scelerisque posuere vivamus egestas porttitor.
-                      Hendrerit vitae at nulla varius proin ipsum. Purus augue
-                      in morbi.
-                    </div>
-                    <div className="self-center mt-20 text-base leading-5 text-center text-neutral-600 max-md:mt-10">
-                      June 7, 2024
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="flex justify-center items-center self-stretch p-2 my-auto border-2 border-gray-200 border-solid rounded-[40px]">
-            <img
-              loading="lazy"
-              src="https://cdn.builder.io/api/v1/image/assets/TEMP/9cced0859d3277768acb8785abd3add1bc5a1fb5eab6ff97d35ae9df29a5e69a?apiKey=285d23d46715474fb293f76359ad36c5&"
-              className="w-6 aspect-square"
-            />
-          </div>
+            ))}
+          </Carousel>
         </div>
         <img
           loading="lazy"

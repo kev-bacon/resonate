@@ -2,8 +2,8 @@ import { createClient } from '@supabase/supabase-js';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import JournalEntryForm from './JournalEntryForm';
-import SpiderGraph from './SpiderGraph';
+import JournalEntryForm from '../components/JournalEntryForm';
+import SpiderGraph from '../components/SpiderGraph';
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
 const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
