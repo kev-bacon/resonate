@@ -1,63 +1,41 @@
+import axios from 'axios';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import Dashboard from '../components/Dashboard'; // Import the Dashboard component
 
 const Chat: React.FC = () => {
-  const [messages, setMessages] = useState([
-    {
-      text: 'How has my mood been this week?',
-      time: '4:41 PM',
-      sender: 'user',
-    },
-    {
-      text: "You've had a mix of moods. Most of your entries mention feeling productive and happy, but there were a few days where you felt stressed and anxious.",
-      time: '12:33 AM',
-      sender: 'system',
-    },
-    {
-      text: 'What day was I feeling the most stressed?',
-      time: '4:41 PM',
-      sender: 'user',
-    },
-    {
-      text: 'You were most stressed on Tuesday, when your friend got into a car accident.',
-      time: '12:33 AM',
-      sender: 'system',
-    },
-  ]);
-
+  const [messages, setMessages] = useState<{ text: string, time: string, sender: 'user' | 'system' }[]>([]);
   const [newMessage, setNewMessage] = useState('');
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewMessage(e.target.value);
-  };
+const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  setNewMessage(e.target.value);
+};
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newMessage.trim() !== '') {
-      setMessages([...messages, { text: newMessage, time: new Date().toLocaleTimeString(), sender: 'user' }]);
-      setNewMessage('');
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (newMessage.trim() !== '') {
+    try {
+      // Add the user's message to the state
+      const userMessage = { text: newMessage, time: new Date().toLocaleTimeString(), sender: 'user' as const };
+      setMessages((prevMessages) => [...prevMessages, userMessage]);
+
+      // Send the user's message to the server
+      const response = await axios.post('http://localhost:5001/api/chatbot', { userMessage: newMessage });
+      const botResponse = response.data.response;
+      const systemMessage = { text: botResponse, time: new Date().toLocaleTimeString(), sender: 'system' as const };
+      setMessages((prevMessages) => [...prevMessages, systemMessage]);
+    } catch (error) {
+      console.error('Error communicating with chatbot:', error);
     }
-  };
+    // Clear the input field after sending the message
+    setNewMessage('');
+  }
+};
+
 
   return (
     <div className="flex flex-col pb-20 bg-white">
-      <div className="flex flex-col pt-5 w-full text-xl font-bold leading-4 text-center whitespace-nowrap bg-gray-50 text-zinc-700 max-md:max-w-full">
-			  <div className="flex gap-5 justify-between items-center self-start ml-4 max-md:flex-wrap">
-				   <Link to="/">
-          <img
-            loading="lazy"
-            srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&width=100 100w, https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&width=200 200w, https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&width=400 400w, https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&width=800 800w, https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&width=1200 1200w, https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&width=1600 1600w, https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&width=2000 2000w, https://cdn.builder.io/api/v1/image/assets/TEMP/1d1b9190cc7e8718e6ce51bd8840a89d76a22daaed94fdc2aeb7001f8d339d92?apiKey=285d23d46715474fb293f76359ad36c5&"
-            className="self-stretch aspect-[2.7] w-[234px]"
-					  />
-					  </Link>
-          <div className="shrink-0 self-stretch my-auto w-0.5 h-10 bg-gray-200 rounded-sm" />
-          <Link to="/" className="self-stretch my-auto">Home</Link>
-          <Link to="/chat" className="self-stretch my-auto">Chat</Link>
-          <Link to="/upload" className="self-stretch my-auto">Upload</Link>
-          <Link to="/discover" className="self-stretch my-auto">Discover</Link>
-        </div>
-        <div className="mt-5 w-full bg-gray-200 min-h-[1px] max-md:max-w-full" />
-      </div>
+      {/* Include the Dashboard component here */}
+      <Dashboard />
       <div className="flex flex-col mt-32 w-full max-w-[796px] mx-auto max-md:mt-10">
         {messages.map((message, index) => (
           <div key={index} className={`flex flex-col ${message.sender === 'user' ? 'self-end' : 'self-start'} mt-8`}>
