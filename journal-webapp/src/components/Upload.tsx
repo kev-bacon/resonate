@@ -17,7 +17,7 @@ const Upload: React.FC = () => {
   const analyzeJournalEntry = async (entry: string) => {
     console.log('Form submitted with entry:', entry);
     try {
-      const response = await axios.post('http://localhost:5001/analyze', { text: entry });
+      const response = await axios.post('http://localhost:5001/api/analyze', { text: entry });
       const data = response.data;
       setEmotionsData(data.data);
       setEntryTitle(data.title);

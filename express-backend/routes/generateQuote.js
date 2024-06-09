@@ -5,45 +5,39 @@ const Groq = require('groq-sdk');
 
 const router = express.Router();
 
-const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
-const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
-
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
+const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY;
+
 const groq = new Groq({ apiKey: GROQ_API_KEY });
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-router.post('/generate-quote', async (req, res) => {
-  const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
-  const { data: entries, error } = await supabase
-    .from('journal_entries')
-    .select('*')
-    .gte('date_time', sevenDaysAgo.toISOString());
-
-  if (error) {
-    console.error('Error fetching entries:', error);
-    return res.status(500).json({ error: error.message });
-  }
-
-  if (entries.length === 0) {
-    return res.status(404).json({ message: 'No entries found for the past 7 days' });
-  }
-
-  const journalText = entries.map(entry => entry.content).join('\n\n');
-
-  const messages = [
-    {
-      role: "system",
-      content: "You are a motivational quote generator. Create a motivational, fun, or funny quote based on the following journal entries."
-    },
-    {
-      role: "user",
-      content: `Generate a quote based on these journal entries: ${journalText}`
-    }
-  ];
-
+router.get('/generate-quote', async (req, res) => {
   try {
+    const { data, error } = await supabase
+      .from('journal_entries')
+      .select('content')
+      .gte('date_time', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
+
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+    const entriesText = data.map(entry => entry.content).join('\n');
+
+    const systemPrompt = {
+      role: "system",
+      content: "You are a motivational quote generator. Provide a motivational, fun, or funny quote based on the following text:"
+    };
+
+    const messages = [
+      systemPrompt,
+      {
+        role: "user",
+        content: entriesText
+      }
+    ];
+
     const response = await groq.chat.completions.create({
       messages,
       model: "llama3-8b-8192",
@@ -51,10 +45,11 @@ router.post('/generate-quote', async (req, res) => {
       max_tokens: 150
     });
 
-    const quote = response.choices[0].message.content;
+    const quote = response.choices[0].message.content.trim();
+
     res.json({ quote });
   } catch (error) {
-    console.error('Error in request to Groq API:', error);
+    console.error('Error generating quote:', error);
     res.status(500).json({ error: error.message });
   }
 });

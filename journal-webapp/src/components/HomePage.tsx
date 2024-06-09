@@ -15,7 +15,7 @@ const HomePage: React.FC = () => {
 
     const fetchAnalysis = async () => {
       try {
-        const response = await axios.post('http://localhost:5001/analyze', { text: selectedQuote });
+        const response = await axios.post('http://localhost:5001/api/analyze', { text: selectedQuote });
         const data = response.data;
         setEmotionsData(data.data);
       } catch (error) {
