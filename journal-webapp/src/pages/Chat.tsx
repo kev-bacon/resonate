@@ -21,8 +21,10 @@ const handleSubmit = async (e: React.FormEvent) => {
       // Send the user's message to the server
       const response = await axios.post('http://localhost:5001/api/chatbot', { userMessage: newMessage });
       const botResponse = response.data.response;
-      const systemMessage = { text: botResponse, time: new Date().toLocaleTimeString(), sender: 'system' as const };
-      setMessages((prevMessages) => [...prevMessages, systemMessage]);
+
+      // Add the bot's response to the state as a separate message in a reply box
+      const botReply = { text: botResponse, time: new Date().toLocaleTimeString(), sender: 'system' as const };
+      setMessages((prevMessages) => [...prevMessages, botReply]);
     } catch (error) {
       console.error('Error communicating with chatbot:', error);
     }
@@ -30,6 +32,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     setNewMessage('');
   }
 };
+
 
 
   return (
